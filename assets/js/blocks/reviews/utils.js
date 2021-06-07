@@ -48,11 +48,21 @@ export const getReviews = ( args ) => {
 	} );
 };
 
+export const getBlockSlug = ( { categoryIds, productId } ) => {
+	if ( productId ) {
+		return 'reviews-by-product';
+	}
+
+	if ( Array.isArray( categoryIds ) ) {
+		return 'reviews-by-category';
+	}
+
+	return 'all-reviews';
+};
+
 export const getBlockClassName = ( attributes ) => {
 	const {
 		className,
-		categoryIds,
-		productId,
 		showReviewDate,
 		showReviewerName,
 		showReviewContent,
@@ -61,24 +71,19 @@ export const getBlockClassName = ( attributes ) => {
 		showReviewRating,
 	} = attributes;
 
-	let blockClassName = 'wc-block-all-reviews';
-
-	if ( productId ) {
-		blockClassName = 'wc-block-reviews-by-product';
-	}
-
-	if ( Array.isArray( categoryIds ) ) {
-		blockClassName = 'wc-block-reviews-by-category';
-	}
-
-	return classNames( blockClassName, className, {
-		'has-image': showReviewImage,
-		'has-name': showReviewerName,
-		'has-date': showReviewDate,
-		'has-rating': showReviewRating,
-		'has-content': showReviewContent,
-		'has-product-name': showProductName,
-	} );
+	return classNames(
+		`wp-block-woocommerce-${ getBlockSlug( attributes ) }`,
+		`wc-block-${ getBlockSlug( attributes ) }`,
+		className,
+		{
+			'has-image': showReviewImage,
+			'has-name': showReviewerName,
+			'has-date': showReviewDate,
+			'has-rating': showReviewRating,
+			'has-content': showReviewContent,
+			'has-product-name': showProductName,
+		}
+	);
 };
 
 export const getDataAttrs = ( attributes ) => {
